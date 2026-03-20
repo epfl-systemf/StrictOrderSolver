@@ -9,7 +9,7 @@ homepage: "https://github.com/epfl-systemf/StrictOrderSolver"
 bug-reports: "https://github.com/epfl-systemf/StrictOrderSolver/issues"
 depends: [
   "dune" {>= "3.22"}
-  "rocq-core" {>= "9.0.0"}
+  "rocq-core" {>= "9.1.0"}
   "rocq-stdlib" {>= "9.0.0"}
   "odoc" {with-doc}
 ]
