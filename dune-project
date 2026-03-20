@@ -1,6 +1,6 @@
 (lang dune 3.22)
 
-(name strict_order_solver)
+(name strict-order-solver)
 
 (generate_opam_files true)
 
@@ -13,7 +13,7 @@
 (license MIT)
 
 (package
- (name strict_order_solver)
+ (name strict-order-solver)
  (synopsis "Complete solver for strict orders (transitive and irreflexive relations) for Rocq")
  (depends
   (rocq-core (>= 9.0.0))

@@ -1,5 +1,5 @@
 (rocq.theory
  (name StrictOrderSolver)
- (package strict_order_solver)
+ (package strict-order-solver)
  (generate_project_file)
  (theories Ltac2 Stdlib))
