@@ -14,7 +14,7 @@
 
 (package
  (name strict-order-solver)
- (synopsis "Complete solver for strict orders (transitive and irreflexive relations) for Rocq")
+ (synopsis "Complete solver for strict orders (transitive+irreflexive relations) for Rocq")
  (depends
   (rocq-core (>= 9.1.0))
   (rocq-stdlib (>= 9.0.0))))
