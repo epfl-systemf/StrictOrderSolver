@@ -1,4 +1,3 @@
-From Ltac2 Require Import Ltac2.
 From Stdlib Require Import Classes.RelationClasses Lists.List.
 Import ListNotations.
 

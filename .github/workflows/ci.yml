@@ -31,4 +31,6 @@ jobs:
           opam install . --deps-only
 
       - name: Dune build
-        run: opam exec -- dune build
+        run: |
+          opam exec -- dune build
+          opam exec -- dune build --profile ltac2

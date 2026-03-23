@@ -171,15 +171,19 @@ Ltac2 find_contradiction hyps_map: constr :=
   try_contras hyps_map (List.map fst (FMap.bindings hyps_map)).
 
 (* collect all hyps of the rel relation, put them in a map, do a dfs until we find the required one *)
-Ltac2 solve_strict_order rel: constr :=
+Ltac2 solve_strict_order rel: unit :=
+  normalize_relations rel;
   let hyps_map := build_graph rel in
-  match get_elements (Control.goal ()) rel with
+  let refined := match get_elements (Control.goal ()) rel with
   | Some (a_str, b_str) =>
     Control.plus (fun _ => find_path hyps_map a_str b_str) (fun _ => find_contradiction hyps_map)
   | _ =>
     find_contradiction hyps_map
-  end.
+  end in
+  Control.refine (fun _ => refined).
 
-Ltac2 Notation "strict_order" rel(constr) :=
-  normalize_relations rel;
-  Control.refine (fun _ => solve_strict_order rel).
+Ltac2 Notation "strict_order" rel(constr) := solve_strict_order rel.
+
+Ltac strict_order rel :=
+  let p := ltac2:(rel |- solve_strict_order (Option.get (Ltac1.to_constr rel))) in
+  p rel.
