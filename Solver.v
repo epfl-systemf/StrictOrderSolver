@@ -23,7 +23,7 @@ Ltac2 rec term_to_string (t: constr): string :=
   Message.to_string msg.
 
 
-Ltac2 rec apply_first (tacs: (unit -> constr) list): constr :=
+Ltac2 rec apply_first (tacs: (unit -> 'a) list): 'a :=
   match tacs with
   | [] => Control.zero (Tactic_failure (Some (fprintf "No tactic succeeded")))
   | tac :: rest =>
@@ -118,21 +118,29 @@ Ltac2 prove_contradiction self_loop: constr :=
           fprintf "Failed to derive a contradiction. Does your relation implement %t?" open_constr:(Irreflexive))))) in
   open_constr:(ltac2:(ltac1:(exfalso); exact $proof_false)).
 
+Ltac2 Type walk_kind := [
+  (* proof of path from `a` to `b` where edges and vertices are not repeated *)
+  | Path (constr)
+  (* proof of cycle from `a` to itself *)
+  | Cycle (constr)
+].
+
 (* in the graph `hyps_map` tries to find a path from `from` to `to` *)
-Ltac2 find_path hyps_map from to: constr :=
+(* It might instead find a cycle for some `a` *)
+Ltac2 find_walk hyps_map from to: walk_kind :=
   let rec dfs visited goal current path :=
     match findi (String.equal current) visited with
     | Some idx =>
       (* we have found a cycle *)
       let cycle_proof := mk_trans (List.rev (List.firstn (Int.add idx 1) path)) in
-      prove_contradiction cycle_proof
+      Cycle cycle_proof
     | None =>
       let visited := current :: visited in
       match FMap.find_opt current hyps_map with
       | Some lst =>
         let try_path (next, hyp_id) () :=
           if String.equal next goal then
-            mk_trans (List.rev (hyp_id :: path))
+            Path (mk_trans (List.rev (hyp_id :: path)))
           else
             dfs visited goal next (hyp_id :: path) in
         apply_first (List.map try_path lst)
@@ -160,7 +168,10 @@ Ltac2 print_full_goal () :=
 (* tries to find a cycle in the graph that will be a contradiction *)
 Ltac2 find_contradiction hyps_map: constr :=
   let try_contra hyps_map name :=
-    prove_contradiction (find_path hyps_map name name) in
+    prove_contradiction (match find_walk hyps_map name name with
+    | Path pr => pr
+    | Cycle pr => pr
+    end) in
   let rec try_contras hyps_map names :=
     match names with
     | name :: rest =>
@@ -176,7 +187,11 @@ Ltac2 solve_strict_order rel: unit :=
   let hyps_map := build_graph rel in
   let refined := match get_elements (Control.goal ()) rel with
   | Some (a_str, b_str) =>
-    Control.plus (fun _ => find_path hyps_map a_str b_str) (fun _ => find_contradiction hyps_map)
+    Control.plus (fun _ =>
+      match find_walk hyps_map a_str b_str with
+      | Path pr => pr
+      | Cycle pr => prove_contradiction pr
+      end) (fun _ => find_contradiction hyps_map)
   | _ =>
     find_contradiction hyps_map
   end in

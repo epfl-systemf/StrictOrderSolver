@@ -200,6 +200,15 @@ Section Tests.
     strict_order lt.
   Qed.
 
+  (* finding cycles while looking for paths *)
+  Goal forall a b,
+    (* here, we look for a cycle for `a` but while doing so we find the cycle `b`<->`b` *)
+    lt a b -> lt b b -> False.
+  Proof.
+    intros.
+    strict_order lt.
+  Qed.
+
   (* ---- Long chains ---- *)
 
   (* 10-element chain *)
