@@ -177,7 +177,7 @@ Ltac2 find_contradiction hyps_map: constr :=
     | name :: rest =>
       Control.plus (fun _=> try_contra hyps_map name) (fun _ => try_contras hyps_map rest)
     | [] =>
-      Control.throw (Tactic_failure (Some (fprintf "No contradiction found")))
+      Control.zero (Tactic_failure (Some (fprintf "No contradiction found")))
     end in
   try_contras hyps_map (List.map fst (FMap.bindings hyps_map)).
 

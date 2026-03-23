@@ -209,6 +209,12 @@ Section Tests.
     strict_order lt.
   Qed.
 
+  (* make sure we can `try` failed solving *)
+  Goal False.
+  Proof.
+    try (strict_order lt).
+  Abort.
+
   (* ---- Long chains ---- *)
 
   (* 10-element chain *)
