@@ -33,13 +33,13 @@ Qed.
 
 ## Installation
 
-1. Pin [opam](https://opam.ocaml.org/) dependency source
+1. Add the Rocq [opam](https://opam.ocaml.org/) repository
 
 ```sh
-opam pin add --no-action strict-order-solver.0.1.0 https://github.com/epfl-systemf/StrictOrderSolver.git
+opam repo add rocq-released https://rocq-prover.org/opam/released
 ```
 
-2. Install as a dependency (or add `strict-order-solver` to your `dune-project`/`.opam` file with the `0.1.0` version selected)
+2. Install as a dependency (or add `strict-order-solver` to your `dune-project`/`.opam` file)
 
 ```sh
 opam install strict-order-solver
